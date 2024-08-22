@@ -93,8 +93,33 @@ const userSchema = new Schema<TUser>(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   },
 );
+
+//virtual
+userSchema.virtual('fullName').get(function () {
+  return this?.name?.firstName + " " + this?.name?.lastName;
+});
+
+// Query Middleware
+userSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+
+userSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+userSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
 
 userSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -112,6 +137,5 @@ userSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
-
 
 export const User = model<TUser>('User', userSchema);
