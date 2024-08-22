@@ -69,7 +69,7 @@ const deleteUser = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User updated successfully',
+    message: 'User deleted successfully',
     data: deleteUser,
   });
 });
