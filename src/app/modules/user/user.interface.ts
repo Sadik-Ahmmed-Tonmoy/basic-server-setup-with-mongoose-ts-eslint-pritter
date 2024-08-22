@@ -1,4 +1,4 @@
-import { USER_ROLE } from "./user.constant";
+import { USER_ROLE } from './user.constant';
 
 export type TUserName = {
   firstName: string;
@@ -25,6 +25,5 @@ export type TUser = {
   address?: TAddress;
   isDeleted: boolean;
 };
-
 
 export type TUserRole = keyof typeof USER_ROLE;

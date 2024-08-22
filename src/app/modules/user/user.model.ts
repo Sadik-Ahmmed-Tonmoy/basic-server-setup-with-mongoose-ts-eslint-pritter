@@ -101,7 +101,7 @@ const userSchema = new Schema<TUser>(
 
 //virtual
 userSchema.virtual('fullName').get(function () {
-  return this?.name?.firstName + " " + this?.name?.lastName;
+  return this?.name?.firstName + ' ' + this?.name?.lastName;
 });
 
 // Query Middleware
@@ -109,7 +109,6 @@ userSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
-
 
 userSchema.pre('findOne', function (next) {
   this.find({ isDeleted: { $ne: true } });

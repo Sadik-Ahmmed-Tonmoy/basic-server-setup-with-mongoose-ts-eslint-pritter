@@ -16,34 +16,69 @@ const createUser = catchAsync(async (req, res) => {
   });
 });
 
-
 const getSingleUserByObjectId = catchAsync(async (req, res) => {
   const { objectId } = req.params;
   const user = await UserServices.getSingleUserByObjectIdFromDB(objectId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User found successfully',
+    message: user?._id ? 'User found successfully' : 'User not found',
     data: user,
   });
 });
 
-
-const getSingleUserByGeneratedUserId= catchAsync(async (req, res) => {
+const getSingleUserByGeneratedUserId = catchAsync(async (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
+
   const user = await UserServices.getSingleUserByGeneratedUserIdFromDB(userId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User found successfully',
+    message: user?._id ? 'User found successfully' : 'User not found',
     data: user,
   });
 });
 
+const getAllUsers = catchAsync(async (req, res) => {
+  const users = await UserServices.getAllUsersFromDB();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Users retrieved successfully',
+    data: users,
+  });
+});
+
+const updateUser = catchAsync(async (req, res) => {
+  const { objectId } = req.params;
+  const { user: userData } = req.body;
+
+  const updatedUser = await UserServices.updateUserInDB(objectId, userData);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User updated successfully',
+    data: updatedUser,
+  });
+});
+
+const deleteUser = catchAsync(async (req, res) => {
+  const { objectId } = req.params;
+  const deleteUser = await UserServices.deleteUserFromDB(objectId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User updated successfully',
+    data: deleteUser,
+  });
+});
 
 export const UserControllers = {
   createUser,
   getSingleUserByObjectId,
   getSingleUserByGeneratedUserId,
+  getAllUsers,
+  updateUser,
+  deleteUser,
 };
