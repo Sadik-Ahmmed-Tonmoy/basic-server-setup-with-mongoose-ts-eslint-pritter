@@ -55,11 +55,30 @@ const getAllUsersFromDB = async () => {
 };
 
 const updateUserInDB = async (objectId: string, updatedData: TUser) => {
-  const user = await User.findByIdAndUpdate(objectId, updatedData, {
+  const { name, address, ...remainingStudentData } = updatedData;
+
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remainingStudentData,
+  };
+
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${key}`] = value;
+    }
+  }
+
+  if (address && Object.keys(address).length) {
+    for (const [key, value] of Object.entries(address)) {
+      modifiedUpdatedData[`address.${key}`] = value;
+    }
+  }
+
+  const user = await User.findByIdAndUpdate(objectId, modifiedUpdatedData, {
     new: true,
     runValidators: true,
     fields: { password: 0, 'name._id': 0, 'address._id': 0, __v: 0 },
   });
+
   return user;
 };
 
