@@ -54,8 +54,8 @@ const getAllUsersFromDB = async () => {
   return users;
 };
 
-const updateUserInDB = async (objectId: string, updatedData: TUser) => {
-  const { name, address, ...remainingStudentData } = updatedData;
+const updateUserInDB = async (objectId: string, payload: TUser) => {
+  const { name, address, ...remainingStudentData } = payload;
 
   const modifiedUpdatedData: Record<string, unknown> = {
     ...remainingStudentData,
@@ -70,6 +70,20 @@ const updateUserInDB = async (objectId: string, updatedData: TUser) => {
   if (address && Object.keys(address).length) {
     for (const [key, value] of Object.entries(address)) {
       modifiedUpdatedData[`address.${key}`] = value;
+    }
+  }
+
+  // Remove email, phone, and userId if they match the current user's data
+  const currentUser = await User.findById(objectId);
+  if (currentUser) {
+    if (modifiedUpdatedData.userId === currentUser.userId) {
+      delete modifiedUpdatedData.userId;
+    }
+    if (modifiedUpdatedData.email === currentUser.email) {
+      delete modifiedUpdatedData.email;
+    }
+    if (modifiedUpdatedData.phone === currentUser.phone) {
+      delete modifiedUpdatedData.phone;
     }
   }
 
