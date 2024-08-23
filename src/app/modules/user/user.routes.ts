@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post(
   '/create-user',
-  validateRequest(UserValidation.userValidationSchema),
+  validateRequest(UserValidation.createUserValidationSchema),
   UserControllers.createUser,
 );
 router.get('/:objectId', UserControllers.getSingleUserByObjectId);
@@ -16,9 +16,9 @@ router.get(
   UserControllers.getSingleUserByGeneratedUserId,
 );
 router.get('/', UserControllers.getAllUsers);
-router.post(
+router.patch(
   '/:objectId',
-  validateRequest(UserValidation.userValidationSchema),
+  validateRequest(UserValidation.updateUserValidationSchema),
   UserControllers.updateUser,
 );
 router.delete('/:objectId', UserControllers.deleteUser);

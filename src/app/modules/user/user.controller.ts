@@ -4,10 +4,8 @@ import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
 
 const createUser = catchAsync(async (req, res) => {
-  const { user: userData } = req.body;
-
+  const userData = req.body;
   const result = await UserServices.createUserIntoDB(userData);
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -29,7 +27,6 @@ const getSingleUserByObjectId = catchAsync(async (req, res) => {
 
 const getSingleUserByGeneratedUserId = catchAsync(async (req, res) => {
   const { userId } = req.params;
-
   const user = await UserServices.getSingleUserByGeneratedUserIdFromDB(userId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -51,10 +48,8 @@ const getAllUsers = catchAsync(async (req, res) => {
 
 const updateUser = catchAsync(async (req, res) => {
   const { objectId } = req.params;
-  const { user: userData } = req.body;
-
+  const  userData  = req.body;
   const updatedUser = await UserServices.updateUserInDB(objectId, userData);
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
