@@ -73,7 +73,7 @@ const updateUserInDB = async (objectId: string, payload: TUser) => {
     }
   }
 
-  // Remove email, phone, and userId if they match the current user's data
+  // (because all are unique) Remove email, phone, and userId if they match the current user's data
   const currentUser = await User.findById(objectId);
   if (currentUser) {
     if (modifiedUpdatedData.userId === currentUser.userId) {
