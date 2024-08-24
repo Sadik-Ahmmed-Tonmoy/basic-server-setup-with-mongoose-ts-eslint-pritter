@@ -94,7 +94,7 @@ const userSchema = new Schema<TUser>(
   {
     timestamps: true,
     toJSON: {
-      virtuals: true,
+      virtuals: true,   
     },
   },
 );
