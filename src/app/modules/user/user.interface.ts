@@ -23,7 +23,7 @@ export interface TUser  {
   needChangePassword: boolean;
   avatar?: string;
   role: 'superAdmin' | 'admin' | 'user';
-  status: 'active' | 'inactive';
+  status: 'in-progress' | 'blocked';
   address?: TAddress;
   isDeleted: boolean;
 };

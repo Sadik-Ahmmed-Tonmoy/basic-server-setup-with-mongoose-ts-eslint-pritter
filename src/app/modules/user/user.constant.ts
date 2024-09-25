@@ -4,4 +4,4 @@ export const USER_ROLE = {
   USER: 'user',
 } as const;
 
-export const USER_STATUS = ['active', 'inactive'] as const;
+export const UserStatus = ['in-progress', 'blocked'] as const;

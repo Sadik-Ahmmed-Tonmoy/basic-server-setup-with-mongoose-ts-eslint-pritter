@@ -1,10 +1,13 @@
 import { TUser } from './user.interface';
 import { User } from './user.model';
+import { generateUserId } from './user.utils';
 
 const createUserIntoDB = async (userData: TUser) => {
   // const user = new User(userData);
   // await user.save();
   // return user;
+
+  userData.userId = await generateUserId(userData?.name?.firstName ,userData?.phone);
 
   const user = await User.create(userData);
 

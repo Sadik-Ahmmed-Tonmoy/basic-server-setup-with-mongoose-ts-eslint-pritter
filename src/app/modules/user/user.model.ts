@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { TAddress, TUser, TUserName, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import { UserStatus } from './user.constant';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -79,8 +80,8 @@ const userSchema = new Schema<TUser, UserModel>(
     },
     status: {
       type: String,
-      enum: ['active', 'inactive'],
-      default: 'active',
+      enum: UserStatus,
+      default: 'in-progress',
     },
     address: {
       type: addressSchema,

@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { UserStatus } from './user.constant';
 
 const createUserValidationSchema = z.object({
   body: z.object({
-    userId: z.string().nonempty(),
+    userId: z.string().optional(),
     name: z.object({
       firstName: z.string().nonempty(),
       lastName: z.string().nonempty(),
@@ -21,7 +22,7 @@ const createUserValidationSchema = z.object({
     needChangePassword: z.boolean().optional().default(true),
     avatar: z.string().optional(),
     role: z.enum(['superAdmin', 'admin', 'user']),
-    status: z.enum(['active', 'inactive']).default('active'),
+    status: z.enum([...UserStatus] as [string, ...string[]]),
     address: z
       .object({
         city: z.string().nonempty(),
@@ -54,7 +55,7 @@ const updateUserValidationSchema = z.object({
     needChangePassword: z.boolean().optional(),
     avatar: z.string().optional(),
     role: z.enum(['superAdmin', 'admin', 'user']).optional(),
-    status: z.enum(['active', 'inactive']).default('active').optional(),
+    status: z.enum([...UserStatus] as [string, ...string[]]).optional(),
     address: z
       .object({
         city: z.string().optional(),
