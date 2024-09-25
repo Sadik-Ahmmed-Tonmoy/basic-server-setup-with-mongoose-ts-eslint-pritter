@@ -9,8 +9,9 @@ import { createToken, verifyToken } from './auth.utils';
 import { User } from '../user/user.model';
 
 const loginUser = async (payload: TLoginUser) => {
+  console.log(payload);
   // checking if the user is exist
-  const user = await User.isUserExistsByCustomId(payload.userId);
+  const user = await User.isUserExistsByCustomIdOrEmail(payload.userIdOrEmail);
 
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');

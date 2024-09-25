@@ -1,11 +1,18 @@
 import { z } from 'zod';
 
 const loginValidationSchema = z.object({
+  // body: z.object({
+  //   userIdOrEmail: z.union([
+  //     z.string({ required_error: 'userId or email is required.' }),
+  //     z.string().email({ message: 'Invalid email format' }),
+  //   ]),
+  //   password: z.string({ required_error: 'Password is required' }),
+  // }),
   body: z.object({
-    userId: z.string({ required_error: 'userId is required.' }),
+    userIdOrEmail: z.string({ required_error: 'userId or Email is required.' }).nonempty( { message: 'userId or Email is required.' }),
     password: z.string({ required_error: 'Password is required' }),
   }),
-});
+}); 
 
 const changePasswordValidationSchema = z.object({
   body: z.object({

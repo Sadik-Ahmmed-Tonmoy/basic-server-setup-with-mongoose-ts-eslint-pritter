@@ -141,9 +141,17 @@ userSchema.post('save', function (doc, next) {
 
 
 
-userSchema.statics.isUserExistsByCustomId = async function (userId: string) {
-  return await User.findOne({ userId }).select('+password');
+// userSchema.statics.isUserExistsByCustomId = async function (userId: string) {
+//   return await User.findOne({ userId }).select('+password');
+// };
+userSchema.statics.isUserExistsByCustomIdOrEmail = async function (
+  userIdOrEmail: string
+) {
+  return await User.findOne({
+    $or: [{ userId: userIdOrEmail }, { email: userIdOrEmail }],
+  }).select('+password');
 };
+
 
 userSchema.statics.isPasswordMatched = async function (
   plainTextPassword,
