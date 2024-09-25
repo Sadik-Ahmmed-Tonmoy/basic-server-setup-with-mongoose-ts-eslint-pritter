@@ -14,7 +14,7 @@ app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
 app.use('/api/v1', router);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+  res.send('Hello developer, I know you can do it !');
 });
 
 app.use(globalErrorHandler);
