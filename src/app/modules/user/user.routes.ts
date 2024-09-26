@@ -13,29 +13,32 @@ router.post(
   UserControllers.createUser,
 );
 
-router.get('/me',
-  auth(
-    USER_ROLE.superAdmin,
-    USER_ROLE.admin,
-    USER_ROLE.user,
-  ),
+router.get(
+  '/me',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.user),
   UserControllers.getMe,
 );
 
+router.get('/',  auth('superAdmin', 'admin'), UserControllers.getAllUsers);
 router.get('/:objectId', UserControllers.getSingleUserByObjectId);
 router.get(
   '/generatedId/:userId',
   UserControllers.getSingleUserByGeneratedUserId,
 );
-router.get('/', UserControllers.getAllUsers);
+
 router.patch(
   '/:objectId',
   validateRequest(UserValidation.updateUserValidationSchema),
   UserControllers.updateUser,
 );
+
+router.post(
+  '/change-status/:id',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  validateRequest(UserValidation.changeStatusValidationSchema),
+  UserControllers.changeStatus,
+);
+
 router.delete('/:objectId', UserControllers.deleteUser);
-
-
-
 
 export const userRoutes = router;

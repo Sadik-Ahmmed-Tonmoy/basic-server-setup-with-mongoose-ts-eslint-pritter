@@ -22,7 +22,7 @@ const createUserValidationSchema = z.object({
     needChangePassword: z.boolean().optional().default(true),
     avatar: z.string().optional(),
     role: z.enum(['superAdmin', 'admin', 'user']),
-    status: z.enum([...UserStatus] as [string, ...string[]]),
+    status: z.enum([...UserStatus] as [string, ...string[]]).optional().default('in-progress'),
     address: z
       .object({
         city: z.string().nonempty(),
@@ -67,4 +67,10 @@ const updateUserValidationSchema = z.object({
   }),
 });
 
-export const UserValidation = { createUserValidationSchema, updateUserValidationSchema };
+const changeStatusValidationSchema = z.object({
+  body: z.object({
+    status: z.enum([...UserStatus] as [string, ...string[]]),
+  }),
+});
+
+export const UserValidation = { createUserValidationSchema, updateUserValidationSchema, changeStatusValidationSchema };
