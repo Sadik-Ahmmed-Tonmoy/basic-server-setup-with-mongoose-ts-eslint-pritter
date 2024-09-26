@@ -16,17 +16,16 @@ router.post(
   AuthControllers.loginUser,
 );
 
-// router.post(
-//   '/change-password',
-//   auth(
-//     USER_ROLE.superAdmin,
-//     USER_ROLE.admin,
-//     USER_ROLE.faculty,
-//     USER_ROLE.student,
-//   ),
-//   validateRequest(AuthValidation.changePasswordValidationSchema),
-//   AuthControllers.changePassword,
-// );
+router.post(
+  '/change-password',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.admin,
+    USER_ROLE.user,
+  ),
+  validateRequest(AuthValidation.changePasswordValidationSchema),
+  AuthControllers.changePassword,
+);
 
 // router.post(
 //   '/refresh-token',
