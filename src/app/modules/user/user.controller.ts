@@ -37,7 +37,7 @@ const getSingleUserByGeneratedUserId = catchAsync(async (req, res) => {
 });
 
 const getAllUsers = catchAsync(async (req, res) => {
-  const users = await UserServices.getAllUsersFromDB();
+  const users = await UserServices.getAllUsersFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

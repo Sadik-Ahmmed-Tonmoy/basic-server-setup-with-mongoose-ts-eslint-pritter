@@ -3,13 +3,18 @@ import AppError from '../../errors/AppError';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { generateUserId } from './user.utils';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { userSearchableFields } from './user.constant';
 
 const createUserIntoDB = async (userData: TUser) => {
   // const user = new User(userData);
   // await user.save();
   // return user;
 
-  userData.userId = await generateUserId(userData?.name?.firstName ,userData?.phone);
+  userData.userId = await generateUserId(
+    userData?.name?.firstName,
+    userData?.phone,
+  );
 
   const user = await User.create(userData);
 
@@ -51,12 +56,23 @@ const getSingleUserByGeneratedUserIdFromDB = async (userId: string) => {
   return user;
 };
 
-const getAllUsersFromDB = async () => {
-  const users = await User.find(
-    {},
-    { password: 0, 'name._id': 0, 'address._id': 0, __v: 0 },
-  );
-  return users;
+const getAllUsersFromDB = async (query : Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(
+    User.find(),
+    query,
+  ) .search(userSearchableFields)
+  .filter()
+  .sort()
+  .paginate()
+  .fields();
+
+  const meta = await userQuery.countTotal();
+  const result = await userQuery.modelQuery;
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const updateUserInDB = async (objectId: string, payload: TUser) => {
@@ -112,9 +128,10 @@ const deleteUserFromDB = async (objectId: string) => {
   return user;
 };
 
-
 const getMeFromDB = async (userId: string) => {
-  const result = await User.findOne({ userId }).select('-password -__v -name._id -address._id');
+  const result = await User.findOne({ userId }).select(
+    '-password -__v -name._id -address._id',
+  );
   return result;
 };
 
