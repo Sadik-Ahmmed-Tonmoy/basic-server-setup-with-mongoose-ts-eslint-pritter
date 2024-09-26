@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+import AppError from '../../errors/AppError';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { generateUserId } from './user.utils';
@@ -110,6 +112,19 @@ const deleteUserFromDB = async (objectId: string) => {
   return user;
 };
 
+
+const getMeFromDB = async (userId: string) => {
+  const result = await User.findOne({ userId }).select('-password -__v -name._id -address._id');
+  return result;
+};
+
+// const changeStatus = async (id: string, payload: { status: string }) => {
+//   const result = await User.findByIdAndUpdate(id, payload, {
+//     new: true,
+//   });
+//   return result;
+// };
+
 export const UserServices = {
   createUserIntoDB,
   getSingleUserByObjectIdFromDB,
@@ -117,4 +132,6 @@ export const UserServices = {
   getAllUsersFromDB,
   updateUserInDB,
   deleteUserFromDB,
+  getMeFromDB,
+  // changeStatus,
 };

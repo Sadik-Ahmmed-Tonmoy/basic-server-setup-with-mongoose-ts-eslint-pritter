@@ -69,6 +69,35 @@ const deleteUser = catchAsync(async (req, res) => {
   });
 });
 
+
+
+
+const getMe = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+  const result = await UserServices.getMeFromDB(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User is retrieved successfully',
+    data: result,
+  });
+});
+
+// const changeStatus = catchAsync(async (req, res) => {
+//   const id = req.params.id;
+
+//   const result = await UserServices.changeStatus(id, req.body);
+
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Status is updated successfully',
+//     data: result,
+//   });
+// });
+
+
 export const UserControllers = {
   createUser,
   getSingleUserByObjectId,
@@ -76,4 +105,6 @@ export const UserControllers = {
   getAllUsers,
   updateUser,
   deleteUser,
+  getMe,
+  // changeStatus,
 };

@@ -8,7 +8,6 @@ import { AuthServices } from './auth.service';
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req.body);
   const { refreshToken, accessToken, needsPasswordChange } = result;
- 
 
   res.cookie('refreshToken', refreshToken, {
     secure: config.NODE_ENV === 'production',
@@ -51,37 +50,37 @@ const refreshToken = catchAsync(async (req, res) => {
   });
 });
 
-// const forgetPassword = catchAsync(async (req, res) => {
-//   const userId = req.body.id;
-//   const result = await AuthServices.forgetPassword(userId);
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Reset link is generated successfully!',
-//     data: result,
-//   });
-// });
+const forgetPassword = catchAsync(async (req, res) => {
+  const { userIdOrEmail } = req.body;
+  const result = await AuthServices.forgetPassword(userIdOrEmail);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Reset link is generated successfully!',
+    data: result,
+  });
+});
 
-// const resetPassword = catchAsync(async (req, res) => {
-//   const token = req.headers.authorization;
+const resetPassword = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
 
-//   if (!token) {
-//     throw new AppError(httpStatus.BAD_REQUEST, 'Something went wrong !');
-//   }
+  if (!token) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Something went wrong !');
+  }
 
-//   const result = await AuthServices.resetPassword(req.body, token);
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Password reset successfully!',
-//     data: result,
-//   });
-// });
+  const result = await AuthServices.resetPassword(req.body, token);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password reset successfully!',
+    data: result,
+  });
+});
 
 export const AuthControllers = {
   loginUser,
   changePassword,
   refreshToken,
-  // forgetPassword,
-  // resetPassword,
+  forgetPassword,
+  resetPassword,
 };
