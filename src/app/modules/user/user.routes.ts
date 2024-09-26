@@ -25,7 +25,7 @@ router.get(
   '/generatedId/:userId',
   UserControllers.getSingleUserByGeneratedUserId,
 );
-
+ 
 router.patch(
   '/:objectId',
   validateRequest(UserValidation.updateUserValidationSchema),
