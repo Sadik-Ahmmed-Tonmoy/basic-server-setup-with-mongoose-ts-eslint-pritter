@@ -9,7 +9,6 @@ import { createToken, verifyToken } from './auth.utils';
 import { User } from '../user/user.model';
 
 const loginUser = async (payload: TLoginUser) => {
-  console.log(payload);
   // checking if the user is exist
   const user = await User.isUserExistsByCustomIdOrEmail(payload.userIdOrEmail);
 
@@ -48,20 +47,19 @@ const loginUser = async (payload: TLoginUser) => {
   const accessToken = createToken(
     jwtPayload,
     config.jwt_access_secret as string,
-    // config.jwt_access_expires_in as string,
-    '10d' ,
+    config.jwt_access_expiration as string,
   );
 
-  // const refreshToken = createToken(
-  //   jwtPayload,
-  //   config.jwt_refresh_secret as string,
-  //   config.jwt_refresh_expires_in as string,
-  // );
+  const refreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expiration as string,
+  );
 
   return {
     accessToken,
-    // refreshToken,
-    // needsPasswordChange: user?.needsPasswordChange,
+    refreshToken,
+    needsPasswordChange: user?.needChangePassword,
   };
 };
 
@@ -71,7 +69,7 @@ const changePassword = async (
 ) => {
   // checking if the user is exist
   const user = await User.isUserExistsByCustomIdOrEmail(userData.userId);
-console.log(user);
+
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
   }
@@ -92,7 +90,6 @@ console.log(user);
   }
 
   //checking if the password is correct
-console.log("password", await User.isPasswordMatched(payload.oldPassword, user?.password));
   if (!(await User.isPasswordMatched(payload.oldPassword, user?.password)))
     throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
 
@@ -102,8 +99,6 @@ console.log("password", await User.isPasswordMatched(payload.oldPassword, user?.
     Number(config.bcrypt_salt_rounds),
   );
 
-  console.log(newHashedPassword, userData);
-
   await User.findOneAndUpdate(
     {
       userId: userData.userId,
@@ -111,7 +106,7 @@ console.log("password", await User.isPasswordMatched(payload.oldPassword, user?.
     },
     {
       password: newHashedPassword,
-      // needsPasswordChange: false,
+      needsPasswordChange: false,
       passwordChangedAt: new Date(),
     },
   );
@@ -119,54 +114,55 @@ console.log("password", await User.isPasswordMatched(payload.oldPassword, user?.
   return null;
 };
 
-// const refreshToken = async (token: string) => {
-//   // checking if the given token is valid
-//   const decoded = verifyToken(token, config.jwt_refresh_secret as string);
+const refreshToken = async (token: string) => {
+  // checking if the given token is valid
+  const decoded = verifyToken(token, config.jwt_refresh_secret as string);
 
-//   const { userId, iat } = decoded;
+  const { userId, iat } = decoded;
 
-//   // checking if the user is exist
-//   const user = await User.isUserExistsByCustomId(userId);
+  // checking if the user is exist
+  const user = await User.isUserExistsByCustomIdOrEmail(userId);
 
-//   if (!user) {
-//     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
-//   }
-//   // checking if the user is already deleted
-//   const isDeleted = user?.isDeleted;
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+  }
+  // checking if the user is already deleted
+  const isDeleted = user?.isDeleted;
 
-//   if (isDeleted) {
-//     throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
-//   }
+  if (isDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
+  }
 
-//   // checking if the user is blocked
-//   const userStatus = user?.status;
+  // checking if the user is blocked
+  const userStatus = user?.status;
 
-//   if (userStatus === 'blocked') {
-//     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
-//   }
+  if (userStatus === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
+  }
 
-//   if (
-//     user.passwordChangedAt &&
-//     User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number)
-//   ) {
-//     throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
-//   }
+  if (
+    user.passwordChangedAt &&
+    User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number)
+  ) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
+  }
 
-//   const jwtPayload = {
-//     userId: user.id,
-//     role: user.role,
-//   };
+  const jwtPayload = {
+    userId: user.userId,
+    email: user.email,
+    role: user.role,
+  };
 
-//   const accessToken = createToken(
-//     jwtPayload,
-//     config.jwt_access_secret as string,
-//     config.jwt_access_expires_in as string,
-//   );
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expiration as string,
+  );
 
-//   return {
-//     accessToken,
-//   };
-// };
+  return {
+    accessToken,
+  };
+};
 
 // const forgetPassword = async (userId: string) => {
 //   // checking if the user is exist
@@ -265,7 +261,7 @@ console.log("password", await User.isPasswordMatched(payload.oldPassword, user?.
 export const AuthServices = {
   loginUser,
   changePassword,
-  // refreshToken,
+  refreshToken,
   // forgetPassword,
   // resetPassword,
 };

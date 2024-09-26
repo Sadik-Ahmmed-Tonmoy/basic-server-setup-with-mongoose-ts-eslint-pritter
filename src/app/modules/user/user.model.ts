@@ -71,6 +71,10 @@ const userSchema = new Schema<TUser, UserModel>(
       type: Boolean,
       default: true,
     },
+    passwordChangedAt:{
+      type: Date,
+      default: new Date(),
+    },
     avatar: {
       type: String,
       required: false,

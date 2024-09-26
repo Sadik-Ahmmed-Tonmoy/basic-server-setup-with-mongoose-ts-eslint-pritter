@@ -7,15 +7,15 @@ import { AuthServices } from './auth.service';
 
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req.body);
-  // const { refreshToken, accessToken, needsPasswordChange } = result;
-  const {  accessToken, } = result;
+  const { refreshToken, accessToken, needsPasswordChange } = result;
+ 
 
-  // res.cookie('refreshToken', refreshToken, {
-  //   secure: config.NODE_ENV === 'production',
-  //   httpOnly: true,
-  //   sameSite: 'none',
-  //   maxAge: 1000 * 60 * 60 * 24 * 365,
-  // });
+  res.cookie('refreshToken', refreshToken, {
+    secure: config.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'none',
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -23,7 +23,7 @@ const loginUser = catchAsync(async (req, res) => {
     message: 'User is logged in successfully!',
     data: {
       accessToken,
-      // needsPasswordChange,
+      needsPasswordChange,
     },
   });
 });
@@ -39,17 +39,17 @@ const changePassword = catchAsync(async (req, res) => {
   });
 });
 
-// const refreshToken = catchAsync(async (req, res) => {
-//   const { refreshToken } = req.cookies;
-//   const result = await AuthServices.refreshToken(refreshToken);
+const refreshToken = catchAsync(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  const result = await AuthServices.refreshToken(refreshToken);
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Access token is retrieved successfully!',
-//     data: result,
-//   });
-// });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Access token is retrieved successfully!',
+    data: result,
+  });
+});
 
 // const forgetPassword = catchAsync(async (req, res) => {
 //   const userId = req.body.id;
@@ -81,7 +81,7 @@ const changePassword = catchAsync(async (req, res) => {
 export const AuthControllers = {
   loginUser,
   changePassword,
-  // refreshToken,
+  refreshToken,
   // forgetPassword,
   // resetPassword,
 };

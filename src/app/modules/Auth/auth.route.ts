@@ -11,7 +11,6 @@ const router = express.Router();
 
 router.post(
   '/login',
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.user),
   validateRequest(AuthValidation.loginValidationSchema),
   AuthControllers.loginUser,
 );
@@ -27,11 +26,11 @@ router.post(
   AuthControllers.changePassword,
 );
 
-// router.post(
-//   '/refresh-token',
-//   validateRequest(AuthValidation.refreshTokenValidationSchema),
-//   AuthControllers.refreshToken,
-// );
+router.post(
+  '/refresh-token',
+  validateRequest(AuthValidation.refreshTokenValidationSchema),
+  AuthControllers.refreshToken,
+);
 
 // router.post(
 //   '/forget-password',

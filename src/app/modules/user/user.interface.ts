@@ -21,6 +21,7 @@ export interface TUser  {
   phone: string;
   password: string;
   needChangePassword: boolean;
+  passwordChangedAt?: Date;
   avatar?: string;
   role: 'superAdmin' | 'admin' | 'user';
   status: 'in-progress' | 'blocked';
