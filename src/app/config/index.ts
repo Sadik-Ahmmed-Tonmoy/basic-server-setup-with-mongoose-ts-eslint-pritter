@@ -13,4 +13,5 @@ export default {
  jwt_access_expiration : process.env.JWT_ACCESS_EXPIRATION,
  jwt_refresh_expiration : process.env.JWT_REFRESH_EXPIRATION,
  reset_pass_ui_link : process.env.RESET_PASS_UI_LINK,
+ super_admin_password : process.env.SUPER_ADMIN_PASSWORD,
 };
