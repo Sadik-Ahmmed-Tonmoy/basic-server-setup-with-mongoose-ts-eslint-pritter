@@ -11,11 +11,21 @@ const createProductIntoDB = async (productData: TProduct) => {
 
 
 
+  const getSingleProductByObjectIdFromDB = async (id: string) => {
+    const product = await Product.findById(
+      { _id: id },
+      {
+        __v: 0,
+      },
+    );
+    return product;
+  }
 
 
 
 
 
   export const ProductServices = {
-    createProductIntoDB
+    createProductIntoDB,
+    getSingleProductByObjectIdFromDB,
   }

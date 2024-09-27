@@ -11,5 +11,7 @@ const router = express.Router();
 
 // product routes
 router.post('/create-product',auth(USER_ROLE.superAdmin, USER_ROLE.admin), validateRequest(ProductValidation.createProductValidationSchema), ProductController.createProduct);
+router.get('/:id',auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.user), ProductController.getSingleProductByObjectId);
+router.get('/',auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.user), ProductController.createProduct);
 
 export const productRoutes = router;
