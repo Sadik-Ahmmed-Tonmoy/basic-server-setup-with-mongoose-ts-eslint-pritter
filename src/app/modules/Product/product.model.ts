@@ -44,7 +44,7 @@ const productSchema = new Schema<TProduct>(
     },
     reviews: {
       type: [Schema.Types.ObjectId],
-      required: [true, 'Reviews is required'],
+      required: false,
     },
     isFeatured: {
       type: Boolean,

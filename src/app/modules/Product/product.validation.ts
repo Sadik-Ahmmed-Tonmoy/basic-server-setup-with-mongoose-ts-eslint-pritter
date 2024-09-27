@@ -38,7 +38,43 @@ const createProductValidationSchema = z.object({
   }),
 });
 
-const updateProductSchema = createProductValidationSchema.partial();
+const updateProductSchema =  z.object({
+  body: z.object({
+    name: z
+      .string({
+        message: 'Product name is required.',
+      })
+      .min(3, 'Product name is required.')
+      .max(255).optional(),
+    description: z
+      .string({ message: 'Product description is required.' })
+      .min(3, 'Product description is required.').optional(),
+    price: z
+      .number({ message: 'Product price is required.' })
+      .min(1, 'Product price is required.').optional(),
+    category: z
+      .string({ message: 'Product category is required.' })
+      .min(3, 'Product category is required.')
+      .max(255).optional(),
+    stock: z
+      .number({ message: 'Product stock is required.' })
+      .min(1, 'Product stock is required.').optional(),
+    mainImage: z
+      .string({ message: 'Product main image is required.' })
+      .min(3, 'Product main image is required.').optional(),
+    images: z
+      .array(
+        z
+          .string({ message: 'Product images is required.' })
+          .url('Invalid image URL.'),
+      )
+      .optional(),
+    rating: z.number().min(1).max(5).optional(),
+    numberOfReviews: z.number().optional(),
+    isFeatured: z.boolean().optional(),
+    isDeleted: z.boolean().optional(),
+  }),
+});
 
 export const ProductValidation = {
   createProductValidationSchema,
