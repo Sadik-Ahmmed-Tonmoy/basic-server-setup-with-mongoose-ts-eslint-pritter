@@ -1,10 +1,8 @@
-import httpStatus from 'http-status';
-import AppError from '../../errors/AppError';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { userSearchableFields } from './user.constant';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { generateUserId } from './user.utils';
-import QueryBuilder from '../../builder/QueryBuilder';
-import { userSearchableFields } from './user.constant';
 
 const createUserIntoDB = async (userData: TUser) => {
   // const user = new User(userData);
@@ -56,15 +54,13 @@ const getSingleUserByGeneratedUserIdFromDB = async (userId: string) => {
   return user;
 };
 
-const getAllUsersFromDB = async (query : Record<string, unknown>) => {
-  const userQuery = new QueryBuilder(
-    User.find(),
-    query,
-  ) .search(userSearchableFields)
-  .filter()
-  .sort()
-  .paginate()
-  .fields();
+const getAllUsersFromDB = async (query: Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(User.find(), query)
+    .search(userSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
   const meta = await userQuery.countTotal();
   const result = await userQuery.modelQuery;
