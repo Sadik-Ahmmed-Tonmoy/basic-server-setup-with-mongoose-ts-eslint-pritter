@@ -42,10 +42,7 @@ const productSchema = new Schema<TProduct>(
       type: Number,
       required: false,
     },
-    reviews: {
-      type: [Schema.Types.ObjectId],
-      required: false,
-    },
+    reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
     isFeatured: {
       type: Boolean,
       default: false,

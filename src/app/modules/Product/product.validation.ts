@@ -33,6 +33,7 @@ const createProductValidationSchema = z.object({
       .optional(),
     rating: z.number().min(1).max(5).optional(),
     numberOfReviews: z.number().optional(),
+    reviews: z.array(z.string()).optional(),
     isFeatured: z.boolean().optional().default(false),
     isDeleted: z.boolean().optional().default(false),
   }),
