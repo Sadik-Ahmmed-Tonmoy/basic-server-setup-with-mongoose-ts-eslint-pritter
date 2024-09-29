@@ -22,6 +22,32 @@ router.put(
   validateRequest(ProductValidation.updateProductSchema),
   ProductController.updateProduct,
 );
+
+// Add multiple image to a variant
+router.patch(
+  '/:productId/variants/:variantId/images/add-multiple',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  validateRequest(ProductValidation.addMultipleImagesValidationSchema),
+  ProductController.addMultipleImagesToVariant,
+);
+
+
+// Add image to a variant
+router.patch(
+  '/:productId/variants/:variantId/images/add',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  validateRequest(ProductValidation.addRemoveImageSchema),
+  ProductController.addImageToVariant,
+);
+
+
+// Remove image from a variant
+router.patch(
+  '/:productId/variants/:variantId/images/remove',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  ProductController.removeImageFromVariant,
+);
+
 router.delete(
   '/:id',
   auth(USER_ROLE.superAdmin, USER_ROLE.admin),

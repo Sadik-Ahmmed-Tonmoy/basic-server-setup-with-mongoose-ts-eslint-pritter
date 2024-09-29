@@ -158,6 +158,80 @@ const updateProductIntoDB = async (id: string, productData: TProduct) => {
   }
 };
 
+const addImageToVariant = async (productId: string, variantId: string, imageUrl: string) => {
+  if(!imageUrl) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Image URL is required');
+  }
+  const result = await Product.findOneAndUpdate(
+    {
+      _id: productId,
+      'variants._id': variantId,
+    },
+    {
+      $addToSet: {
+        'variants.$.images': imageUrl,
+      },
+    },
+    { new: true, runValidators: true },
+  );
+  
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Product or Variant not found');
+  }
+  return result;
+};
+
+const addMultipleImagesToVariant = async (
+  productId: string,
+  variantId: string,
+  imageUrls: string[],
+) => {
+  if (!imageUrls || imageUrls.length === 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Image URL is required');
+  }
+
+  // Update the variant's images array, ensuring only new images are added
+  const result = await Product.findOneAndUpdate(
+    {
+      _id: productId,
+      'variants._id': variantId,
+    },
+    {
+      // Use $addToSet to avoid duplicates
+      $addToSet: {
+        'variants.$.images': { $each: imageUrls }, // Add each URL uniquely
+      },
+    },
+    { new: true, runValidators: true },
+  );
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Product or Variant not found');
+  }
+  return result;
+};
+
+
+
+
+const removeImageFromVariant = async (productId: string, variantId: string, imageUrl: string) => {
+  const product = await Product.findById(productId);
+  
+  if (!product) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
+  }
+
+  const variant = product.variants.find(v => v._id?.toString() === variantId);
+  if (!variant) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Variant not found');
+  }
+
+  variant.images = variant.images.filter(image => image !== imageUrl); // Remove the image URL from the images array
+  await product.save();
+  
+  return product;
+};
+
 const deleteProductFromDB = async (id: string) => {
   const result = await Product.findByIdAndUpdate(
     id,
@@ -178,5 +252,8 @@ export const ProductServices = {
   getSingleProductByObjectIdFromDB,
   getAllProductsFromDB,
   updateProductIntoDB,
+  addImageToVariant,
+  addMultipleImagesToVariant,
+  removeImageFromVariant,
   deleteProductFromDB,
 };

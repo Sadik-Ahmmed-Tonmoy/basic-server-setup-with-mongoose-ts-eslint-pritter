@@ -80,8 +80,24 @@ const updateProductSchema = z.object({
 });
 
 
+const addRemoveImageSchema = z.object({
+  body: z.object({
+    imageUrl: z.string().url('Invalid image URL').nonempty('Image URL is required'),
+  }),
+});
+
+const addMultipleImagesValidationSchema = z.object({
+  body: z.object({
+    imageUrls: z
+      .array(z.string().url({ message: 'Image URL is required and must be a valid URL.' }))
+      .nonempty({ message: 'At least one image URL is required.' }),
+  }),
+});
+
 
 export const ProductValidation = {
   createProductValidationSchema,
   updateProductSchema,
+  addRemoveImageSchema,
+  addMultipleImagesValidationSchema,
 };
