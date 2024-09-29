@@ -26,7 +26,7 @@ const getSingleProductByObjectIdFromDB = async (id: string) => {
 };
 
 const getAllProductsFromDB = async (query: Record<string, unknown>) => {
-  const productQuery = new QueryBuilder(Product.find(), query)
+  const productQuery = new QueryBuilder(Product.find({isDeleted:false }), query)
     .search(productSearchableFields)
     .filter()
     .sort()
@@ -83,6 +83,40 @@ const updateProductIntoDB = async (id: string, productData: TProduct) => {
           { session },
         );
       }
+
+
+        // filter out the variants which are not deleted
+        // const existingNotDeletedVariantsForUpdate = variants.filter(
+        //   (variant) => variant?._id && !variant.isDeleted,
+        // );
+        // if (existingNotDeletedVariantsForUpdate.length > 0) {
+        //   const updateOldVariants = existingNotDeletedVariantsForUpdate.map(
+        //     async (variant) => {
+        //       const updatedVariant = await Product.findOneAndUpdate(
+        //         { _id: id, 'variants._id': variant._id },
+        //         {
+        //           $set: {
+        //             'variants.$.variant_name': variant.variant_name,
+        //             'variants.$.code': variant.code,
+        //             'variants.$.price': variant.price,
+        //             'variants.$.stock': variant.stock,
+        //             'variants.$.images': variant.images,
+        //             'variants.$.isDeleted': variant.isDeleted,
+        //           },
+        //         },
+        //         { new: true, runValidators: true, session },
+        //       );
+        //       return updatedVariant;
+        //     },
+        //   );
+        //   if (!updateOldVariants) {
+        //     throw new AppError(
+        //       httpStatus.BAD_REQUEST,
+        //       'Failed to update product',
+        //     );
+        //   }
+        // }
+
 
       // Handle existing variants
       const existingVariants = variants.filter(
