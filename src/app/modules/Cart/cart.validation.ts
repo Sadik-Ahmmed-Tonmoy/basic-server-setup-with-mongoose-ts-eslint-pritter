@@ -1,21 +1,31 @@
 import { z } from 'zod';
 
-export const addCartItemSchema = z.object({
+ const addCartItemValidationSchema = z.object({
   body: z.object({
-    product: z.string().min(1, 'Product ID is required'),
+    productId: z.string().min(1, 'Product ID is required').nonempty(),
+    variantId: z.string().min(1, 'Variant ID is required').nonempty(),
     quantity: z.number().min(1, 'Quantity must be at least 1'),
   }),
 });
 
-export const updateCartItemSchema = z.object({
+ const updateCartItemValidationSchema = z.object({
   body: z.object({
-    product: z.string().min(1, 'Product ID is required'),
+    productId: z.string().min(1, 'Product ID is required'),
+    variantId: z.string().min(1, 'Variant ID is required').nonempty(),
     quantity: z.number().min(1, 'Quantity must be at least 1'),
   }),
 });
 
-export const removeCartItemSchema = z.object({
+ const removeCartItemValidationSchema = z.object({
   body: z.object({
-    product: z.string().min(1, 'Product ID is required'),
+    productId: z.string().min(1, 'Product ID is required'),
+    variantId: z.string().min(1, 'Variant ID is required').nonempty(),
   }),
 });
+
+
+export const CartValidation = {
+  addCartItemValidationSchema,
+  updateCartItemValidationSchema,
+  removeCartItemValidationSchema,
+}

@@ -1,11 +1,13 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
 export interface TCartItem {
-    product: Types.ObjectId;
-    quantity: number;
+  _id?: Types.ObjectId;
+  productId: Types.ObjectId;
+  variantId: Types.ObjectId;
+  quantity: number;
 }
 
 export interface TCart {
-    user: Types.ObjectId;
-    cartItems: TCartItem[];
+  userId: Types.ObjectId;
+  cartItems: TCartItem[];
 }

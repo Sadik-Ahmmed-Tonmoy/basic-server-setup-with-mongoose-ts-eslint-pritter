@@ -12,6 +12,17 @@ const variantSchema = new Schema({
     required: [true, 'Variant code is required'],
     trim: true,
   },
+  size: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  color: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+
   price: {
     type: Number,
     required: [true, 'Variant price is required'],
@@ -35,6 +46,11 @@ const productSchema = new Schema<TProduct>(
     name: {
       type: String,
       required: [true, 'Name is required'],
+      trim: true,
+    },
+    brand: {
+      type: String,
+      required: false,
       trim: true,
     },
     description: {

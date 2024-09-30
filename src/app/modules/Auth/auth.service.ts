@@ -39,6 +39,7 @@ const loginUser = async (payload: TLoginUser) => {
   //create token and sent to the  client
 
   const jwtPayload = {
+    id: user._id,
     userId: user.userId,
     email: user.email,
     role: user.role,
@@ -148,6 +149,7 @@ const refreshToken = async (token: string) => {
   }
 
   const jwtPayload = {
+    id: user._id,
     userId: user.userId,
     email: user.email,
     role: user.role,
@@ -186,6 +188,7 @@ const forgetPassword = async (userId: string) => {
   }
 
   const jwtPayload = {
+    id: user._id,
     userId: user.userId,
     email: user.email,
     role: user.role,

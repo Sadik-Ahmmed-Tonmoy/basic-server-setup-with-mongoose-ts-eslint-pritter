@@ -1,28 +1,33 @@
 import { model, Schema } from 'mongoose';
-import { TCart } from './cart.interface';
+import { TCart, TCartItem } from './cart.interface';
+
+const cartItemSchema = new Schema<TCartItem>({
+  productId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
+    required: true,
+  },
+  variantId: {
+    type: Schema.Types.ObjectId,
+    // ref: 'Product',
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
+});
 
 const CartSchema = new Schema<TCart>(
   {
-    user: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
       unique: true,
     },
-    cartItems: [
-      {
-        product: {
-          type: Schema.Types.ObjectId,
-          ref: 'Product',
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-          min: 1,
-        },
-      },
-    ],
+    cartItems: [cartItemSchema],
   },
   {
     timestamps: true,

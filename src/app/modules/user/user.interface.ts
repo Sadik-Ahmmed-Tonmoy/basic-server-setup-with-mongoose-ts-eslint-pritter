@@ -15,6 +15,7 @@ export type TAddress = {
 };
 
 export interface TUser  {
+  _id?: string;
   userId: string;
   name: TUserName;
   email: string;

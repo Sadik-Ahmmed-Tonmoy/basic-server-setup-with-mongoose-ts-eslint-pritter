@@ -1,18 +1,20 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
 export interface TVariant {
   _id?: Types.ObjectId;
   variant_name: string;
   code: string;
+  size?: string;
+  color?: string;
   price: number;
   stock: number;
   images: string[];
   isDeleted: boolean;
 }
 
-
 export interface TProduct {
   name: string;
+  brand: string;
   description: string;
   category: string;
   mainImage: string;
@@ -23,4 +25,3 @@ export interface TProduct {
   isFeatured: boolean;
   isDeleted: boolean;
 }
-
