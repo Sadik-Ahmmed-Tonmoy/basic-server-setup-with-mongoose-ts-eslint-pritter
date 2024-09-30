@@ -9,11 +9,7 @@ const getCartFromDB = async (userId: string) => {
   const cart = await Cart.findOne({ userId }).populate('cartItems.productId');
 
   if (!cart) {
-    return {
-      message: 'Cart is empty',
-      cartItems: [],
-      
-    }
+    return [];
   }
 
   const formattedCartItems = cart.cartItems.map((item) => {
@@ -22,6 +18,11 @@ const getCartFromDB = async (userId: string) => {
       (v: (typeof Product.prototype)['variants'][number]) =>
         v?._id?.toString() === item.variantId?.toString(),
     );
+
+    if (!variant) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Variant not found in product');
+    }
+
 
     return {
       _id: item._id?.toString(),
@@ -35,6 +36,7 @@ const getCartFromDB = async (userId: string) => {
       code: variant.code ? variant.code : '',
       category: product.category,
       price: variant.price,
+      totalPrice: variant.price * item.quantity,
       images: variant.images,
       quantity: item.quantity,
     };
@@ -80,24 +82,26 @@ const addToCartIntoDB = async (
       });
     }
 
-    // Add new item or update existing item
+    // Check if the product with the variant is already in the cart
     const cartItem = cart.cartItems.find(
       (item) =>
         item.productId.toString() === productId &&
         item.variantId.toString() === variantId,
     );
+
     if (cartItem) {
+      // Update the quantity if the product is already in the cart
       cartItem.quantity = quantity;
     } else {
+      // Add new product variant to the cart
       cart.cartItems.push({
         productId: new mongoose.Types.ObjectId(productId),
         variantId: new mongoose.Types.ObjectId(variantId),
         quantity,
       });
-
-      await cart.save({ session });
     }
 
+    await cart.save({ session });
     await session.commitTransaction();
     return cart;
   } catch (err) {
@@ -134,6 +138,13 @@ const updateCartItemIntoDB = async (
     const variant = product?.variants.find(
       (v) => v?._id?.toString() === variantId,
     );
+    if (!variant) {
+      throw new AppError(
+        httpStatus.NOT_FOUND,
+        'Variant not found for the product',
+      );
+    }
+
     if (variant && variant.stock < newQuantity) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Not enough stock');
     }
@@ -193,7 +204,11 @@ const removeItemFromCartIntoDB = async (
 };
 
 const clearCartFromDB = async (userId: string) => {
-  return await Cart.findOneAndDelete({ userId });
+  const cart = await Cart.findOneAndDelete({ userId });
+  if (!cart) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Cart not found');
+  }
+  return cart;
 };
 
 export const CartServices = {
