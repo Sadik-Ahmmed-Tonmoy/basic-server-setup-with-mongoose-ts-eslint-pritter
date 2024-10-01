@@ -1,10 +1,10 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import notFound from './app/middlewares/notFound';
-import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import router from './app/routes';
 const app: Application = express();
 import cookieParser from 'cookie-parser';
+import globalErrorHandler from './app/middlewares/globalErrorHandler';
+import notFound from './app/middlewares/notFound';
 
 // parser
 app.use(express.json());

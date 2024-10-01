@@ -73,13 +73,4 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
 export default globalErrorHandler;
 
-//pattern
-/*
-success
-message
-errorSources:[
-  path:'',
-  message:''
-]
-stack
-*/
+
