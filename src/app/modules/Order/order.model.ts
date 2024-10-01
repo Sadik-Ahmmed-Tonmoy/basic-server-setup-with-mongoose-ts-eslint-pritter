@@ -12,9 +12,22 @@ const orderItemSchema = new Schema<TOrderItem>({
     required: [true, 'Variant ID is required'],
     // ref: 'Variant',
   },
-  name: {
+  productName: {
     type: String,
-    required: [true, 'Name is required'],
+    required: [true, 'productName is required'],
+    trim: true,
+  },
+  variantName: {
+    type: String,
+    required: [true, 'variantName is required'],
+    trim: true,
+  },
+  size: {
+    type: String,
+    trim: true,
+  },
+  color: {
+    type: String,
     trim: true,
   },
   quantity: {
@@ -82,4 +95,4 @@ const orderSchema = new Schema <TOrder>(
   },
 );
 
-export const order = model<TOrder>('Order', orderSchema);
+export const Order = model<TOrder>('Order', orderSchema);

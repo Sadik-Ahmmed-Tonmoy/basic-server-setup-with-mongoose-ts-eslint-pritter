@@ -6,7 +6,10 @@ const createOrderValidationSchema = z.object({
       z.object({
         productId: z.string().min(1, 'Product ID is required').nonempty(),
         variantId: z.string().min(1, 'Variant ID is required').nonempty(),
-        name: z.string().min(1, 'Name is required').nonempty(),
+        productName: z.string().min(1, 'Name is required').nonempty(),
+        variantName: z.string().min(1, 'Name is required').nonempty(),
+        size: z.string().optional(),
+        color: z.string().optional(),
         quantity: z.number().min(1, 'Quantity must be at least 1'),
         price: z.number().min(0.01, 'Price must be greater than 0'),
         thumbnailImg: z.string().min(1, 'Thumbnail is required').nonempty(),

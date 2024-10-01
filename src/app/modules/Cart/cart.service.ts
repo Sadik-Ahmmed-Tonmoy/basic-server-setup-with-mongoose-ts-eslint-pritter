@@ -29,7 +29,7 @@ const getCartFromDB = async (userId: string) => {
       productId: product._id,
       variantId: item.variantId,
       name: product.name,
-      variant_name: variant.variant_name,
+      variantName: variant.variant_name,
       color: variant.color ? variant.color : '',
       size: variant.size ? variant.size : '',
       brand: product.brand ? product.brand : '',

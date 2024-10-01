@@ -4,6 +4,7 @@ import { AuthRoutes } from '../modules/Auth/auth.route';
 import { productRoutes } from '../modules/Product/product.routes';
 import { reviewRoutes } from '../modules/Review/review.routes';
 import { cartRoutes } from '../modules/Cart/cart.routes';
+import { orderRoutes } from '../modules/Order/order.routes';
 
 const router = Router();
 
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: '/cart',
     route: cartRoutes,
+  },
+  {
+    path: '/order',
+    route: orderRoutes,
   },
  
 ];

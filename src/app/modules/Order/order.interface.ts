@@ -3,7 +3,10 @@ import { Types } from 'mongoose';
 export interface TOrderItem {
   productId: Types.ObjectId;
   variantId: Types.ObjectId;
-  name: string;
+  productName: string;
+  variantName: string;
+  size: string;
+  color: string;
   quantity: number;
   price: number;
   thumbnailImg: string;
