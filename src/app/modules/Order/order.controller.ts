@@ -32,9 +32,50 @@ const getAllOrdersForSingleUser =  catchAsync(async(req, res)=> {
 })
 
 
+// get single order details by id
+const getSingleOrderDetails =  catchAsync(async(req, res)=> {
+    const orderId = req.params.orderId;
+    const result = await orderService.getSingleOrderDetailsFromDB(orderId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Order fetched successfully',
+        data: result,
+    });
+})
+
+// update order status
+const updateOrderStatus =  catchAsync(async(req, res)=> {
+    const orderId = req.params.orderId;
+    const orderData = req.body;
+    const result = await orderService.updateOrderStatusInDB(orderId, orderData);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Order status updated successfully',
+        data: result,
+    });
+})
+
+// Delete order
+const deleteOrder = catchAsync(async(req, res)=> {
+    const orderId = req.params.orderId;
+   const result = await orderService.deleteOrderFromDB(orderId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Order deleted successfully',
+        data: result,
+    });
+})
+
 
 
 export const orderController = {
     createOrder,
-    getAllOrdersForSingleUser
+    getAllOrdersForSingleUser,
+    getSingleOrderDetails,
+    updateOrderStatus,
+    deleteOrder,
+
 }

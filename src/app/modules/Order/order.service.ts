@@ -16,9 +16,29 @@ const getAllOrdersForSingleUserFromDB = async (userId: string) => {
     return orders;
 }
   
+// get single order details by id
+const getSingleOrderDetailsFromDB = async (orderId: string) => {
+    const order = Order.findById(orderId);
+    return order;
+}
+
+// update order status
+const updateOrderStatusInDB = async (orderId: string, orderData: TOrder) => {
+    const order = Order.findByIdAndUpdate(orderId, orderData, {new: true});
+    return order;
+}
+
+// Delete order
+const deleteOrderFromDB = async (orderId: string) => {
+    await Order.findByIdAndDelete(orderId);
+}
+
 
 
 export const orderService = {
     createOrderIntoDB,
-    getAllOrdersForSingleUserFromDB
+    getAllOrdersForSingleUserFromDB,
+    getSingleOrderDetailsFromDB,
+    updateOrderStatusInDB,
+    deleteOrderFromDB,
 }

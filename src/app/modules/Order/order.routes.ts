@@ -22,4 +22,22 @@ router.get(
   orderController.getAllOrdersForSingleUser,
 );
 
+// get single order details by id
+router.get('/:orderId', auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.user), orderController.getSingleOrderDetails);
+
+// update order status
+router.patch(
+  '/:orderId/status',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  validateRequest(orderValidation.updateOrderValidationSchema),
+  orderController.updateOrderStatus,
+);
+
+// Delete order
+router.delete(
+  '/:orderId',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  orderController.deleteOrder,
+);
+
 export const orderRoutes = router;
