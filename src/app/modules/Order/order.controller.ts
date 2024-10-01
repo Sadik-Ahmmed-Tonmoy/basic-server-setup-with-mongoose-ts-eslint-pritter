@@ -4,6 +4,8 @@ import sendResponse from "../../utils/sendResponse";
 import { orderService } from "./order.service";
 
 
+
+// create order
 const createOrder = catchAsync(async(req, res)=>{
     const orderData = req.body;
     const userId = req.user.id;
@@ -16,6 +18,23 @@ const createOrder = catchAsync(async(req, res)=>{
     });
 })
 
+
+// get all orders for single user
+const getAllOrdersForSingleUser =  catchAsync(async(req, res)=> {
+    const userId = req.user.id;
+    const result = await orderService.getAllOrdersForSingleUserFromDB(userId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Orders fetched successfully',
+        data: result,
+    });
+})
+
+
+
+
 export const orderController = {
-    createOrder
+    createOrder,
+    getAllOrdersForSingleUser
 }

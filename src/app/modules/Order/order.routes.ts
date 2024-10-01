@@ -15,5 +15,11 @@ router.post(
   orderController.createOrder,
 );
 
+// get all orders for single user
+router.get(
+  '/user',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.user),
+  orderController.getAllOrdersForSingleUser,
+);
 
 export const orderRoutes = router;
