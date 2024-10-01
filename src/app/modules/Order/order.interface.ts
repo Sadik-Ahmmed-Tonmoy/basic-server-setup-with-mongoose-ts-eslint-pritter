@@ -14,10 +14,9 @@ export interface TOrder {
   userId: Types.ObjectId;
   orderItems: TOrderItem[];
   shippingAddress: string;
-  paymentMethod: string;
-  totalAmount: number;
   isPaid: boolean;
   paidAt: Date;
+  paymentMethod: 'cod' | 'online';
   paymentStatus: 'pending' | 'success' | 'failed';
   orderStatus: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   isDelivered: boolean;

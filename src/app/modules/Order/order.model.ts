@@ -48,13 +48,10 @@ const orderSchema = new Schema <TOrder>(
     },
     paymentMethod: {
       type: String,
-      required: [true, 'Payment Method is required'],
-      trim: true,
+        enum: ['cod', 'online'],
+        required: [true, 'Payment Method is required'],
     },
-    totalAmount: {
-      type: Number,
-      required: [true, 'Total Amount is required'],
-    },
+
     isPaid: {
       type: Boolean,
       default: false,
