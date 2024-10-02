@@ -58,10 +58,6 @@ const productSchema = new Schema<TProduct>(
       required: [true, 'Description is required'],
       trim: true,
     },
-    variants: {
-      type: [variantSchema],
-      required: [true, 'At least one variant is required'],
-    },
     category: {
       type: String,
       required: [true, 'Category is required'],
@@ -81,6 +77,7 @@ const productSchema = new Schema<TProduct>(
       required: false,
     },
     reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
+    variants: [{ type: Schema.Types.ObjectId, ref: 'Variant' }], 
     isFeatured: {
       type: Boolean,
       default: false,

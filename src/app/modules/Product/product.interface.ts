@@ -1,16 +1,5 @@
 import { Types } from 'mongoose';
-
-export interface TVariant {
-  _id?: Types.ObjectId;
-  variant_name: string;
-  code: string;
-  size?: string;
-  color?: string;
-  price: number;
-  stock: number;
-  images: string[];
-  isDeleted: boolean;
-}
+import { TVariant } from '../Variant/variant.interface';
 
 export interface TProduct {
   name: string;
@@ -21,7 +10,21 @@ export interface TProduct {
   rating: number;
   numberOfReviews: number;
   reviews: Types.ObjectId[];
-  variants: TVariant[];
+  variants: Types.ObjectId[];
+  isFeatured: boolean;
+  isDeleted: boolean;
+}
+
+export interface TUpdateProduct {
+  name: string;
+  brand: string;
+  description: string;
+  category: string;
+  mainImage: string;
+  rating: number;
+  numberOfReviews: number;
+  reviews: Types.ObjectId[];
+  variants:  TVariant[];
   isFeatured: boolean;
   isDeleted: boolean;
 }

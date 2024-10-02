@@ -2,15 +2,49 @@ import httpStatus from 'http-status';
 import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { productSearchableFields } from './product.constant';
-import { TProduct } from './product.interface';
+import { TProduct, TUpdateProduct } from './product.interface';
 import { Product } from './product.model';
 import mongoose from 'mongoose';
+import { Variant } from '../Variant/variant.model';
 
-const createProductIntoDB = async (productData: TProduct) => {
-  const product = new Product(productData);
-  await product.save();
-  return product;
+const createProductIntoDB = async (payload: TProduct) => {
+  const { variants, ...basicProductData } = payload;
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    // Create the product without variants
+    const newProduct = await Product.create([basicProductData], { session });
+    const productId = newProduct[0]._id;
+
+    // Create variants and store their IDs
+    if (variants && variants.length > 0) {
+      const createdVariants = await Variant.create(
+        variants.map(variant => ({
+          ...variant,
+          product: productId
+        })),
+        { session }
+      );
+
+      // Add variant IDs to the product
+      await Product.findByIdAndUpdate(
+        productId,
+        { $push: { variants: { $each: createdVariants.map(v => v._id) } } },
+        { session }
+      );
+    }
+
+    await session.commitTransaction();
+    return newProduct[0];
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
 };
+
 
 const getSingleProductByObjectIdFromDB = async (id: string) => {
   const product = await Product.findById(
@@ -18,7 +52,7 @@ const getSingleProductByObjectIdFromDB = async (id: string) => {
     {
       __v: 0,
     },
-  );
+  ).populate('variants', { __v: 0 });
   if (!product) {
     throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
   }
@@ -26,7 +60,7 @@ const getSingleProductByObjectIdFromDB = async (id: string) => {
 };
 
 const getAllProductsFromDB = async (query: Record<string, unknown>) => {
-  const productQuery = new QueryBuilder(Product.find({isDeleted:false }), query)
+  const productQuery = new QueryBuilder(Product.find({isDeleted:false }).populate('variants', { __v: 0 }), query)
     .search(productSearchableFields)
     .filter()
     .sort()
@@ -42,18 +76,9 @@ const getAllProductsFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
-// const updateProductIntoDB = async (id: string, productData: TProduct) => {
-//   const result = await Product.findByIdAndUpdate(id, productData, {
-//     new: true,
-//     runValidators: true,
-//   });
-//   if (!result) {
-//     throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
-//   }
-//   return result;
-// };
 
-const updateProductIntoDB = async (id: string, productData: TProduct) => {
+
+const updateProductIntoDB = async (id: string, productData: TUpdateProduct) => {
   const { variants, ...basicProductData } = productData;
 
   const session = await mongoose.startSession();
@@ -73,55 +98,23 @@ const updateProductIntoDB = async (id: string, productData: TProduct) => {
     if (variants && variants.length > 0) {
       // Handle deleted variants
       const deletedVariantsIds = variants
-        .filter((variant) => variant._id && variant.isDeleted)
+        .filter((variant) => variant._id && variant?.isDeleted)
         .map((item) => item._id);
 
       if (deletedVariantsIds.length > 0) {
         await Product.findByIdAndUpdate(
           id,
-          { $pull: { variants: { _id: { $in: deletedVariantsIds } } } },
+          { $pull: { variants:  { $in: deletedVariantsIds }  } },
           { session },
         );
       }
-
-
-        // filter out the variants which are not deleted
-        // const existingNotDeletedVariantsForUpdate = variants.filter(
-        //   (variant) => variant?._id && !variant.isDeleted,
-        // );
-        // if (existingNotDeletedVariantsForUpdate.length > 0) {
-        //   const updateOldVariants = existingNotDeletedVariantsForUpdate.map(
-        //     async (variant) => {
-        //       const updatedVariant = await Product.findOneAndUpdate(
-        //         { _id: id, 'variants._id': variant._id },
-        //         {
-        //           $set: {
-        //             'variants.$.variant_name': variant.variant_name,
-        //             'variants.$.code': variant.code,
-        //             'variants.$.price': variant.price,
-        //             'variants.$.stock': variant.stock,
-        //             'variants.$.images': variant.images,
-        //             'variants.$.isDeleted': variant.isDeleted,
-        //           },
-        //         },
-        //         { new: true, runValidators: true, session },
-        //       );
-        //       return updatedVariant;
-        //     },
-        //   );
-        //   if (!updateOldVariants) {
-        //     throw new AppError(
-        //       httpStatus.BAD_REQUEST,
-        //       'Failed to update product',
-        //     );
-        //   }
-        // }
-
 
       // Handle existing variants
       const existingVariants = variants.filter(
         (variant) => variant._id && !variant.isDeleted,
       );
+    
+      
       for (const variant of existingVariants) {
         await Product.findOneAndUpdate(
           { _id: id, 'variants._id': variant._id },
