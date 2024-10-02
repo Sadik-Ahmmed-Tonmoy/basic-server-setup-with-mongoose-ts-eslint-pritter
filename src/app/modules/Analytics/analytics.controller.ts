@@ -46,7 +46,7 @@ const trackAction = catchAsync(async (req , res) => {
     });
   });
 
-  const getConversionRate = async (req: Request, res: Response) => {
+  const getConversionRate = catchAsync(async (req, res) => {
     const cartConversionRate = await AnalyticsService.calculateConversionRate();
     const sessionConversionRate = await AnalyticsService.calculateSessionConversionRate();
   
@@ -58,12 +58,12 @@ const trackAction = catchAsync(async (req , res) => {
         sessionConversionRate,
       },
     });
-  };
+  });
 
   export const AnalyticsController = {
     trackAction,
     getBestSellers,
     getAbandonedCarts,
     getConversionRate,
-    
+
   };
