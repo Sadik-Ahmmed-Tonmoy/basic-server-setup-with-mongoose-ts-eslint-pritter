@@ -25,7 +25,45 @@ const trackAction = catchAsync(async (req , res) => {
       data: analyticsEntry,
     });
   });
+
+
+  const getBestSellers = catchAsync(async (req, res) => {
+    const bestSellers = await AnalyticsService.getBestSellingProducts();
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      data: bestSellers,
+    });
+  });
   
+
+  const getAbandonedCarts = catchAsync(async (req, res) => {
+    const carts = await AnalyticsService.getAbandonedCarts();
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      data: carts,
+    });
+  });
+
+  const getConversionRate = async (req: Request, res: Response) => {
+    const cartConversionRate = await AnalyticsService.calculateConversionRate();
+    const sessionConversionRate = await AnalyticsService.calculateSessionConversionRate();
+  
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      data: {
+        cartConversionRate,
+        sessionConversionRate,
+      },
+    });
+  };
+
   export const AnalyticsController = {
     trackAction,
+    getBestSellers,
+    getAbandonedCarts,
+    getConversionRate,
+    
   };
