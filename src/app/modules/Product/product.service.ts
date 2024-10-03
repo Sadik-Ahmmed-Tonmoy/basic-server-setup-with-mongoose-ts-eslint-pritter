@@ -108,7 +108,7 @@ const updateProductIntoDB = async (id: string, productData: TUpdateProduct) => {
           { session },
         );
       }
-
+     
       // Handle existing variants
       const existingVariants = variants.filter(
         (variant) => variant._id && !variant.isDeleted,
