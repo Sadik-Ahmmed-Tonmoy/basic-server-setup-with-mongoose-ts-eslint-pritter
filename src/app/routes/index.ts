@@ -6,6 +6,7 @@ import { reviewRoutes } from '../modules/Review/review.routes';
 import { cartRoutes } from '../modules/Cart/cart.routes';
 import { orderRoutes } from '../modules/Order/order.routes';
 import { analyticsRoutes } from '../modules/Analytics/analytics.routes';
+import { VariantRoutes } from '../modules/Variant/variant.routes';
 
 const router = Router();
 
@@ -21,6 +22,10 @@ const moduleRoutes = [
   {
     path: '/products',
     route: productRoutes,
+  },
+  {
+    path: '/variant',
+    route: VariantRoutes,
   },
   {
     path: '/reviews',
