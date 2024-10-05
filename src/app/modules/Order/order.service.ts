@@ -34,7 +34,6 @@ const deleteOrderFromDB = async (orderId: string) => {
 }
 
 
-
 export const orderService = {
     createOrderIntoDB,
     getAllOrdersForSingleUserFromDB,
