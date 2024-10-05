@@ -39,7 +39,7 @@ router.patch(
   validateRequest(ProductValidation.addRemoveImageSchema),
   ProductController.addImageToVariant,
 );
-
+ 
 
 // Remove image from a variant
 router.patch(
