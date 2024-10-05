@@ -15,7 +15,6 @@ const createVariantIntoDB = async (payload: TVariant) => {
   // Add variant IDs to the product
   product.variants.push(variant._id);
   await product.save();
-
   return variant;
 };
 

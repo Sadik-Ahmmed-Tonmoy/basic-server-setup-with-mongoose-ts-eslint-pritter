@@ -102,7 +102,7 @@ const addToCartIntoDB = async (
 
     await cart.save({ session });
     await session.commitTransaction();
-    return await Cart.findById(cart._id).populate('cartItems.productId').populate('cartItems.variantId');
+    return cart;
   } catch (err) {
     await session.abortTransaction();
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add product to cart');
@@ -134,9 +134,11 @@ const updateCartItemIntoDB = async (
 
     // Validate product stock
     const product = await Product.findById(productId).session(session);
-    const variant = product?.variants.find(
-      (v) => v?._id?.toString() === variantId,
-    );
+    if (!product) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
+    }
+
+    const variant = await Variant.findById(variantId).session(session);
     if (!variant) {
       throw new AppError(
         httpStatus.NOT_FOUND,
