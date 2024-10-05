@@ -13,35 +13,34 @@ const getCartFromDB = async (userId: string) => {
     return [];
   }
 
-  const formattedCartItems = cart.cartItems.map((item) => {
-    const product = item.productId as typeof Product.prototype;
-    const variant = product.variants.find(
-      (v: (typeof Product.prototype)['variants'][number]) =>
-        v?._id?.toString() === item.variantId?.toString(),
-    );
+  const formattedCartItems = await Promise.all(
+    cart.cartItems.map(async (item) => {
+      const product = item.productId as typeof Product.prototype;
+      const variant = await Variant.findById(item.variantId);
+      if (!variant)
+        throw new AppError(
+          httpStatus.NOT_FOUND,
+          'Variant not found in product',
+        );
 
-    if (!variant) {
-      throw new AppError(httpStatus.NOT_FOUND, 'Variant not found in product');
-    }
-
-
-    return {
-      _id: item._id?.toString(),
-      productId: product._id,
-      variantId: item.variantId,
-      name: product.name,
-      variantName: variant.variant_name,
-      color: variant.color ? variant.color : '',
-      size: variant.size ? variant.size : '',
-      brand: product.brand ? product.brand : '',
-      code: variant.code ? variant.code : '',
-      category: product.category,
-      price: variant.price,
-      totalPrice: variant.price * item.quantity,
-      images: variant.images,
-      quantity: item.quantity,
-    };
-  });
+      return {
+        _id: item._id?.toString(),
+        productId: product._id,
+        variantId: item.variantId,
+        name: product.name,
+        variantName: variant.variant_name,
+        color: variant.color || '',
+        size: variant.size || '',
+        brand: product.brand || '',
+        code: variant.code || '',
+        category: product.category,
+        price: variant.price,
+        totalPrice: variant.price * item.quantity,
+        images: variant.images,
+        quantity: item.quantity,
+      };
+    }),
+  );
 
   return formattedCartItems;
 };
@@ -209,7 +208,7 @@ const clearCartFromDB = async (userId: string) => {
   if (!cart) {
     throw new AppError(httpStatus.NOT_FOUND, 'Cart not found');
   }
-  return cart;
+  return null;
 };
 
 export const CartServices = {
