@@ -1,9 +1,15 @@
 import AppError from '../../errors/AppError';
+import { Product } from '../Product/product.model';
 import { TVariant } from './variant.interface';
 import { Variant } from './variant.model';
 import httpStatus from 'http-status';
 
 const createVariantIntoDB = async (payload: TVariant) => {
+  const product = await Product.findById(payload?.product);
+  if (!product) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
+  }
+
   const variant = await Variant.create(payload);
   return variant;
 };
@@ -27,7 +33,11 @@ const updateVariantIntoDB = async (id: string, payload: TVariant) => {
 };
 
 const deleteVariantByIdFromDB = async (id: string) => {
-  const variant = await Variant.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+  const variant = await Variant.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    { new: true },
+  );
   if (!variant) {
     throw new AppError(httpStatus.NOT_FOUND, 'Variant not found');
   }
