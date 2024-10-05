@@ -11,6 +11,11 @@ const createVariantIntoDB = async (payload: TVariant) => {
   }
 
   const variant = await Variant.create(payload);
+
+  // Add variant IDs to the product
+  product.variants.push(variant._id);
+  await product.save();
+
   return variant;
 };
 
@@ -24,7 +29,7 @@ const getVariantByIdFromDB = async (id: string) => {
 
 const updateVariantIntoDB = async (id: string, payload: TVariant) => {
   const variant = await Variant.findByIdAndUpdate(id, payload, {
-    new: true,
+    new: true, runValidators: true,
   });
   if (!variant) {
     throw new AppError(httpStatus.NOT_FOUND, 'Variant not found');

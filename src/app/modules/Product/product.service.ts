@@ -36,7 +36,7 @@ const createProductIntoDB = async (payload: TProduct) => {
     }
 
     await session.commitTransaction();
-    return newProduct[0];
+    return await Product.findById(productId).populate('variants', { __v: 0 });
   } catch (error) {
     await session.abortTransaction();
     throw error;
@@ -96,52 +96,21 @@ const updateProductIntoDB = async (id: string, productData: TUpdateProduct) => {
     }
 
     if (variants && variants.length > 0) {
-      // Handle deleted variants
-      const deletedVariantsIds = variants
-        .filter((variant) => variant._id && variant?.isDeleted)
-        .map((item) => item._id);
-
-      if (deletedVariantsIds.length > 0) {
-        await Product.findByIdAndUpdate(
-          id,
-          { $pull: { variants:  { $in: deletedVariantsIds }  } },
-          { session },
-        );
-      }
-     
       // Handle existing variants
       const existingVariants = variants.filter(
         (variant) => variant._id && !variant.isDeleted,
       );
-    
-      
       for (const variant of existingVariants) {
-        await Product.findOneAndUpdate(
-          { _id: id, 'variants._id': variant._id },
-          {
-            $set: {
-              'variants.$': variant,
-            },
-          },
-          { session },
-        );
-      }
-
-      // Handle new variants
-      const newVariants = variants.filter(
-        (variant) => !variant._id && !variant.isDeleted,
-      );
-      if (newVariants.length > 0) {
-        await Product.findByIdAndUpdate(
-          id,
-          { $push: { variants: { $each: newVariants } } },
+        await Variant.findOneAndUpdate(
+          { _id: variant._id, product: id },
+          variant,
           { session },
         );
       }
     }
 
     await session.commitTransaction();
-    const result = await Product.findById(id);
+    const result = await Product.findById(id).populate('variants', { __v: 0 });
     return result;
   } catch (err) {
     await session.abortTransaction();

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import AppError from '../../errors/AppError';
 import { Product } from '../Product/product.model';
 import { Cart } from './cart.model';
+import { Variant } from '../Variant/variant.model';
 
 // Get all cart items
 const getCartFromDB = async (userId: string) => {
@@ -61,14 +62,12 @@ const addToCartIntoDB = async (
       throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
     }
 
-    const variant = product.variants.find(
-      (variant) => variant?._id?.toString() === variantId,
-    );
+    const variant = await Variant.findById(variantId).session(session);
+
     if (!variant) {
       throw new AppError(httpStatus.NOT_FOUND, 'Variant not found');
     }
-
-    if (variant.stock < quantity) {
+    if (variant?.stock < quantity) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Not enough stock');
     }
 
@@ -103,7 +102,7 @@ const addToCartIntoDB = async (
 
     await cart.save({ session });
     await session.commitTransaction();
-    return cart;
+    return await Cart.findById(cart._id).populate('cartItems.productId').populate('cartItems.variantId');
   } catch (err) {
     await session.abortTransaction();
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to add product to cart');

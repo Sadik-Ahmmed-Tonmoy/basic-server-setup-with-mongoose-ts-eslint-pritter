@@ -5,7 +5,6 @@ import { VariantServices } from './variant.service';
 
 const createVariant = catchAsync(async (req, res) => {
   const variantData = req.body;
-  console.log(variantData);
   const result = await VariantServices.createVariantIntoDB(variantData);
   sendResponse(res, {
     statusCode: httpStatus.OK,

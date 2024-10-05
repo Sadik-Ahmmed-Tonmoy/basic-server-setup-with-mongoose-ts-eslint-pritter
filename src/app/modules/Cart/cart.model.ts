@@ -9,7 +9,7 @@ const cartItemSchema = new Schema<TCartItem>({
   },
   variantId: {
     type: Schema.Types.ObjectId,
-    ref: 'Product',
+    ref: 'Variant',
     required: true,
   },
   quantity: {
