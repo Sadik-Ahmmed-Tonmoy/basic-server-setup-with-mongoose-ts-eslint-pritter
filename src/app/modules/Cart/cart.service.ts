@@ -210,7 +210,7 @@ const clearCartFromDB = async (userId: string) => {
   }
   return null;
 };
-
+  
 export const CartServices = {
   getCartFromDB,
   addToCartIntoDB,
