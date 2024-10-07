@@ -209,7 +209,7 @@ const clearCartFromDB = async (userId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Cart not found');
   }
   return null;
-};
+};  
   
 export const CartServices = {
   getCartFromDB,
