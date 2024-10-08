@@ -11,7 +11,7 @@ const getCartFromDB = async (userId: string) => {
 
   if (!cart) {
     return [];
-  }
+  }   
 
   const formattedCartItems = await Promise.all(
     cart.cartItems.map(async (item) => {
