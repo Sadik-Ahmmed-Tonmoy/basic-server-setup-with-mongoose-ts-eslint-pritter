@@ -102,6 +102,9 @@ const updateUserInDB = async (objectId: string, payload: TUser) => {
     if (modifiedUpdatedData.phone === currentUser.phone) {
       delete modifiedUpdatedData.phone;
     }
+    if (modifiedUpdatedData.password) {
+      delete modifiedUpdatedData.password;
+    }
   }
 
   const user = await User.findByIdAndUpdate(objectId, modifiedUpdatedData, {
