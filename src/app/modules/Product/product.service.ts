@@ -109,8 +109,8 @@ const updateProductIntoDB = async (id: string, productData: TUpdateProduct) => {
       }
     }
 
-    await session.commitTransaction();
     const result = await Product.findById(id).populate('variants', { __v: 0 });
+    await session.commitTransaction();
     return result;
   } catch (err) {
     await session.abortTransaction();
